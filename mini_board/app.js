@@ -3,7 +3,6 @@ const fs =require('fs');
 const ejs = require('ejs');
 const url = require('url');
 const qs = require('querystring');
-const { Server } = require('node:http');
 
 const index_page = fs.readFileSync('./index.ejs', 'utf8');
 const login_page = fs.readFileSync('./login.ejs', 'utf8');
@@ -11,11 +10,11 @@ const login_page = fs.readFileSync('./login.ejs', 'utf8');
 const max_num = 10;  //最大保管数
 const filename = 'mydata.txt'; //データファイル名
 var message_data; //データ
-readFormFile(filename);
+readFromFile(filename);
 
-var saver = http.createServer(getFormClient);
+var server = http.createServer(getFromClient);
 
-Server.listen(3000);
+server.listen(3000);
 console.log('Server start!');
 
 // ここまでメインプログラム=======
@@ -98,7 +97,7 @@ function addToData(id, msg, fname, request) {
   var obj_str = JSON.stringify(obj);
   console.log('add data: ' + obj_str);
   message_data.unshift(obj_str);
-  if (message_data_length > max_num) {
+  if (message_data.length > max_num) {
     message_data.pop();
   }
   saveToFile(fname);
@@ -106,8 +105,8 @@ function addToData(id, msg, fname, request) {
 
 // データ保存
 function saveToFile(fname) {
-  var data_str =message_data.join('\n');
-  fs.writerFile( fname, data_str, (err) => {
+  var data_str = message_data.join('\n');
+  fs.writeFile( fname, data_str, (err) => {
     if (err) { throw err; }
   });
 }
